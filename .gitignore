@@ -1,0 +1,17 @@
+.sconsign.dblite
+        box.o
+        camera.o
+        dump_png.o
+        flat_shader.o
+        grading/
+        hierarchy.o
+        main.o
+        mesh.o
+        output.png
+        parse.o
+        phong_shader.o
+        plane.o
+        ray_tracer
+        reflective_shader.o
+        render_world.o
+        sphere.o
