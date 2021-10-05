@@ -35,7 +35,7 @@ Hit Render_World::Closest_Intersection(const Ray& ray)
         if ( obj_hit.dist > small_t &&  obj_hit.dist < closest_hit.dist)
             closest_hit = obj_hit;
     }
-    return {};
+    return closest_hit;
 }
 
 // set up the initial view ray and call
