@@ -9,8 +9,15 @@
 // to record a hit with t=0 as the first entry in hits.
 Hit Plane::Intersection(const Ray& ray, int part) const
 {
-    TODO;
-    return {0,0,0};
+    // TODO;
+    if ((dot(ray.direction, normal)) == 0)  // prevents divide by zero
+        return {0, 0, 0};
+
+    double t = (dot(x1, normal) - (dot(ray.endpoint, normal)))/(dot(ray.direction, normal));
+    if( t< 0)
+        return {0, 0, 0};
+    else
+        return {this,t,0};
 }
 
 vec3 Plane::Normal(const vec3& point, int part) const
