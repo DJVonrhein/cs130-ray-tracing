@@ -67,12 +67,11 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
 
     Hit closest_hit = Closest_Intersection(ray);
     vec3 point = ray.Point(closest_hit.dist);
-    if (closest_hit.dist < std::numeric_limits<double>::max()){
-        
-        color = closest_hit.object->material_shader->Shade_Surface(ray, point, closest_hit.object->Normal(point,0), 1 );
+    if (closest_hit.dist < std::numeric_limits<double>::max()){   
+        color = closest_hit.object->material_shader->Shade_Surface(ray, point, closest_hit.object->Normal(point,0), recursion_depth );
     }
     else{
-        color = this->background_shader->Shade_Surface(ray, point, closest_hit.object->Normal(point,0), 1 );
+        color = background_shader->Shade_Surface(ray, vec3(0,0,0), vec3(0,0,0), -1 );
     }
 
     return color;
