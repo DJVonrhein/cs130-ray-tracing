@@ -5,14 +5,23 @@
 Hit Sphere::Intersection(const Ray& ray, int part) const
 {
     // TODO;
-    double t1 = (-2 + sqrt(4-(4*dot(ray.endpoint - center, ray.endpoint - center))))/2;
-    // double t2 = (-2 - sqrt(4-(4*dot(ray.endpoint - center, ray.endpoint - center))))/2;
+    vec3 u = ray.direction;
+    vec3 e_minus_c = ray.endpoint - center;
+    double sqrt_part = sqrt(pow((dot(u, e_minus_c)),2) - (e_minus_c.magnitude_squared()- pow(radius, 2)));
+    double t_plus,t_minus = -(dot(u, e_minus_c));
 
-    if(t1 < small_t)
-        return {0,0,0};
-    else
-        return {this,t1,part};
+    t_plus += sqrt_part;
+    t_minus -= sqrt_part;
+
+    if(t_minus > small_t)
+        return {this,t_minus,part};
+    else if(t_plus > small_t)
+        return {this,t_plus,part};
+    return {0,0,0};
     
+    
+
+
 }
 
 vec3 Sphere::Normal(const vec3& point, int part) const

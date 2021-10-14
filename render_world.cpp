@@ -25,8 +25,6 @@ Hit Render_World::Closest_Intersection(const Ray& ray)
     // TODO;
     double min_t = std::numeric_limits<double>::max();
     
-        
-        
     Hit closest_hit = {0, min_t, 0};
    
     for(unsigned i = 0; i < objects.size(); i++){
@@ -35,14 +33,19 @@ Hit Render_World::Closest_Intersection(const Ray& ray)
             closest_hit = obj_hit;
     }
     return closest_hit;
+
+    
+
 }
 
 // set up the initial view ray and call
 void Render_World::Render_Pixel(const ivec2& pixel_index)
 {
-    Ray ray;
-    ray.endpoint = camera.position;
-    ray.direction = (camera.World_Position(pixel_index) - ray.endpoint).normalized();
+    
+    vec3 endpoint = camera.position;
+    vec3 direction = (camera.World_Position(pixel_index) - endpoint).normalized();
+    Ray ray(endpoint, direction);
+
     vec3 color=Cast_Ray(ray,1);
     camera.Set_Pixel(pixel_index,Pixel_Color(color));
 }
@@ -75,13 +78,20 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
     }
 
     return color;
+
+    
 }
 
 void Render_World::Initialize_Hierarchy()
 {
     TODO; // Fill in hierarchy.entries; there should be one entry for
     // each part of each object.
-
+    // for (unsigned i = 0; i < objects.size(); ++i){
+    //     Entry newEntry;
+    //     newEntry.obj = &objects.at(i)
+    //     newEntry.part = 
+    //     newEntry.box = 
+    // }
     hierarchy.Reorder_Entries();
     hierarchy.Build_Tree();
 }
