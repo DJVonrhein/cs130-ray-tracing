@@ -15,39 +15,36 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
     // L = kd I max(0, n · l)
     // not using c = c_l * max(0, e · r)^p
     // not using r = −l + 2(l · n)n,
-    vec3 color(0,0,0);
-    vec3 color_d(0,0,0);                //diffuse component of color
-    
-    
 
-   
+
+
+    vec3 color_a = color_ambient * (world.ambient_color * world.ambient_intensity);    //c_a = k_a * (I_a)
+    vec3 color_d(0,0,0);
+    vec3 color_s(0,0,0);
+    vec3 color(0,0,0);
+    // vec3 color = color_a;
+
     vec3 intensity;
-    for(unsigned i = 0; i < world.lights.size(); ++i){
-        intensity = world.lights.at(i)->Emitted_Light(world.lights.at(i)->position - intersection_point);
-        vec3 l = (world.lights.at(i)->position - intersection_point).normalized();
-        if(dot(normal,l) >= 0)
-            color_d +=  color_diffuse * intensity * dot(normal,l);
+    Ray s_ray;
+    for(unsigned i = 0; i < world.lights.size(); ++i){      //calculates diffuse and spectral component
         
-        // if(debug_pixel)
-        //     std::cout << "diffuse = " << color_d << std::endl;
+        vec3 l = (world.lights.at(i)->position - intersection_point);
+        vec3 l_norm = l.normalized();
+        vec3 r = (2* dot(l_norm,normal) * normal - l_norm).normalized();
+
+        intensity = world.lights.at(i)->Emitted_Light(world.lights.at(i)->position - intersection_point);
+        // vec3 v = (world.camera.position - intersection_point).normalized();
+        // vec3 h = (v + l)/((v + l).normalized());
+
+        s_ray.endpoint = intersection_point;
+        s_ray.direction = l_norm;
+        Hit intersect = world.Closest_Intersection(s_ray);
+        if (!world.enable_shadows || (intersect.dist >= l.magnitude() && world.enable_shadows)){    //decides whether we use the diffuse + specular or not
+            color_d +=  color_diffuse * intensity * std::max(dot(normal.normalized(),l_norm),0.0);
+            color_s += color_specular * intensity * pow(std::max(dot(-1.0 * ray.direction,r),0.0), specular_power);
+        }
 
     }
-    color = color_d;
-    Hit closest = world.Closest_Intersection(ray);
-    // int j = -1;
-    // for (unsigned i = 0; i <= world.objects.size(); ++i){ // debugging, ignore
-    //     if (i == world.objects.size()){
-    //         break;
-    //     }
-    //     if(world.objects.at(i) == closest.object){
-    //         j = i; 
-    //         break;
-    //     }  
-
-    // if(debug_pixel){
-    // std::cout << "intersection with obj[" <<  j << "] part = "<< closest.part << " dist = " << closest.dist << std::endl;
-    // std::cout << "call Shade_Surface with: location = " << intersection_point << "; normal = " << normal << std::endl;
-
-    
+    color = color_a + color_d + color_s;
     return color;
 }
