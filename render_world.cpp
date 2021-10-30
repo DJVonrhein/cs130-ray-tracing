@@ -66,6 +66,10 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
 {
     vec3 color;
 
+
+    // if (recursion_depth > recursion_depth_limit){
+    //     return {0,0,0};        //ambient of reflective object
+    // }
     //  TODO; // determine the color here
 
     Hit closest_hit = Closest_Intersection(ray);
